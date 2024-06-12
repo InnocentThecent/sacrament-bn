@@ -1,0 +1,125 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum STATE_ENUM {
+  FRESH
+  VERIFIED
+  DISABLED
+  DELETED
+}
+
+enum ROLE_ENUM {
+  CLERGY
+  CHRISTIAN
+  HIGH_PRIEST
+}
+
+enum SACRAMENT_APPLICATION_STATUS {
+  PENDING
+  REQUESTED_PAYMENT
+  PAYMENT_COMPLETED
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model User {
+  id             Int        @id @default(autoincrement())
+  email          String     @unique
+  firstName      String?
+  lastName       String?
+  telephone      String?    @unique
+  username       String?
+  gender         String?
+  password       String?
+  profilePicture String?
+  role           ROLE_ENUM  @default(CHRISTIAN)
+  state          STATE_ENUM @default(FRESH)
+  christian      Christian?
+}
+
+model Christian {
+  id                   Int                    @id @default(autoincrement())
+  user                 User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId               Int                    @unique
+  uniqueCode           String                 @unique
+  dob                  DateTime
+  fatherName           String
+  motherName           String
+  homeAddress          String
+  province             String
+  district             String
+  godParent            String?
+  baptismDate          DateTime?
+  euchuristDate        DateTime?
+  marriageDate         DateTime?
+  confirmationDate     DateTime?
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  christianSacraments  ChristianSacrament[]
+  sacramentApplication SacramentApplication[] @relation("christian")
+  massRequests         SacramentApplication[] @relation("massRequest")
+  offerings            Offering[]
+}
+
+model Sacrament {
+  id                 Int                  @id @default(autoincrement())
+  name               String @unique
+  description        String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  ChristianSacrament ChristianSacrament[]
+}
+
+model ChristianSacrament {
+  id           Int       @id @default(autoincrement())
+  christian    Christian @relation(fields: [christianId], references: [id], onDelete: Cascade)
+  christianId  Int
+  sacrament    Sacrament @relation(fields: [sacramentId], references: [id], onDelete: Cascade)
+  sacramentId  Int
+  dateReceived DateTime
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model SacramentApplication {
+  id              Int                          @id @default(autoincrement())
+  christian       Christian                    @relation("christian", fields: [christianId], references: [id], onDelete: Cascade)
+  christianId     Int
+  sacramentAmount Float?
+  type            String
+  relationship    String?
+  burialDate      DateTime?
+  applyingFor     Int?
+  massRequester   Christian?                   @relation("massRequest", fields: [applyingFor], references: [id], onDelete: Cascade)
+  status          SACRAMENT_APPLICATION_STATUS @default(PENDING)
+  createdAt       DateTime                     @default(now())
+  updatedAt       DateTime                     @updatedAt
+}
+
+model Parish {
+  id Int @id @default(autoincrement())
+  diocese String?
+  parishName String?
+  signature String?
+  offeringAmount Float?
+}
+
+model Offering {
+  id Int @id @default(autoincrement())
+  christian Christian @relation(fields: [christianId], references: [id], onDelete: Cascade)
+  christianId Int
+  amount Float
+  status String? @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

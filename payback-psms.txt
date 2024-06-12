@@ -1,0 +1,2 @@
+Application ID: ac2da594-14ff-11ef-8dee-deade826d28d
+Application Secret: d255b28ad0bfd6d1423a2dad518b4811da39a3ee5e6b4b0d3255bfef95601890afd80709
