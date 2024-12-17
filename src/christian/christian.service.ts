@@ -380,7 +380,7 @@ export class Christian {
       );
     }
   }
-  async giveOfferings(userId: number, phoneNumber: number, amount: number) {
+  async giveOfferings(userId: number, phoneNumber: number, amount: number, year:number) {
     try {
       const token = await this.generateAccessToken();
       var options = {
@@ -409,6 +409,7 @@ export class Christian {
               },
             },
             amount: Number(amount),
+            year
           },
         });
       }

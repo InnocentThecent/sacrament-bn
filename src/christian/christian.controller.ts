@@ -42,6 +42,7 @@ export class ChristianController {
     data: {
       telephone: number;
       amount: number;
+      year: number;
     },
     @User() user: UserDecoratorType,
   ) {
@@ -49,6 +50,7 @@ export class ChristianController {
       user.id,
       data?.telephone,
       data?.amount,
+      data?.year
     );
     return application;
   }

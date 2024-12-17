@@ -55,8 +55,8 @@ const seedUp = async () => {
       motherName: 'Mother Christian',
       fatherName: 'Father Christian',
       province: 'Kigali',
-      district: 'Nyarugenge',
-      homeAddress: 'Biryogo',
+      district: 'GASABO',
+      homeAddress: 'REMERA',
       dob: new Date(),
       user: {
         connect: {

@@ -119,6 +119,7 @@ model Offering {
   christian Christian @relation(fields: [christianId], references: [id], onDelete: Cascade)
   christianId Int
   amount Float
+  year Int?
   status String? @default("PENDING")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
